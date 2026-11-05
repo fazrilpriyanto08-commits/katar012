@@ -16,10 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (\Throwable $e, Request $request) {
-            return response(
-                "APPLICATION ERROR:\n" .
-                $e->getMessage() . "\n\n" .
+            return new \Illuminate\Http\Response(
+                "=== APPLICATION ROOT ERROR ===\n" .
+                "Message: " . $e->getMessage() . "\n" .
                 "File: " . $e->getFile() . ":" . $e->getLine() . "\n\n" .
+                "Stack Trace:\n" .
                 $e->getTraceAsString(),
                 500,
                 ['Content-Type' => 'text/plain']
