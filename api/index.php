@@ -19,6 +19,12 @@ try {
         }
     }
 
+    // Prepare package and services cache in /tmp so Laravel never writes to read-only bootstrap/cache
+    $packagesSrc = __DIR__ . '/../bootstrap/cache/packages.php';
+    if (!file_exists('/tmp/packages.php') && file_exists($packagesSrc)) {
+        copy($packagesSrc, '/tmp/packages.php');
+    }
+
     // Copy pre-seeded SQLite database to /tmp if not present
     $tmpDb = '/tmp/database.sqlite';
     $sourceDb = __DIR__ . '/../database/database.sqlite';

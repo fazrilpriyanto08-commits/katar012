@@ -22,6 +22,8 @@
     "APP_DEBUG": "true",
     "APP_KEY": "base64:x/U/i0e2Q4M3Vw3x1wQ0jX1e6L5a4S3d2F1g0H9j8K7=",
     "APP_URL": "https://katar1205.vercel.app",
+    "APP_PACKAGES_CACHE": "/tmp/packages.php",
+    "APP_SERVICES_CACHE": "/tmp/services.php",
     "DB_CONNECTION": "sqlite",
     "DB_DATABASE": "/tmp/database.sqlite",
     "VIEW_COMPILED_PATH": "/tmp/views",
