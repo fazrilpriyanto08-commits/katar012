@@ -1,0 +1,64 @@
+{
+  "name": "Unit Penghubung Warga RT 12 RW 05",
+  "short_name": "Warga RT 12",
+  "description": "Pusat Layanan Digital, Informasi Kegiatan, Inventaris, dan Kedaruratan Warga RT 012 RW 05 Kelurahan Lenteng Agung",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "portrait",
+  "background_color": "#0c0a09",
+  "theme_color": "#064e3b",
+  "lang": "id-ID",
+  "icons": [
+    {
+      "src": "/images/logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Kedaruratan SOS",
+      "short_name": "SOS RT 12",
+      "description": "Hubungi Hotline Darurat Ketua RT & Humas",
+      "url": "/#emergency-section",
+      "icons": [{ "src": "/images/logo.jpg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Agenda Kegiatan",
+      "short_name": "Agenda",
+      "description": "Jadwal Kerja Bakti, Rapat, & Lomba Warga",
+      "url": "/events",
+      "icons": [{ "src": "/images/logo.jpg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Warta & Kabar RT",
+      "short_name": "Warta",
+      "description": "Berita dan pengumuman resmi lingkungan",
+      "url": "/articles",
+      "icons": [{ "src": "/images/logo.jpg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Kotak Aspirasi",
+      "short_name": "Aspirasi",
+      "description": "Sampaikan saran, aduan, atau masukan",
+      "url": "/aspiration",
+      "icons": [{ "src": "/images/logo.jpg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Pasar & Lapak UMKM",
+      "short_name": "UMKM Warga",
+      "description": "Beli jajanan & sewa jasa tetangga RT 12",
+      "url": "/lapak-warga",
+      "icons": [{ "src": "/images/logo.jpg", "sizes": "192x192" }]
+    }
+  ]
+}
