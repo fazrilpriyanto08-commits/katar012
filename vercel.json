@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "framework": null,
   "outputDirectory": "public",
   "functions": {
     "api/index.php": {
@@ -9,8 +8,7 @@
   },
   "routes": [
     {
-      "src": "/(images|manifest.json|sw.js|offline.html|favicon.ico|build)(.*)",
-      "dest": "/public/$1$2"
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",
@@ -19,7 +17,7 @@
   ],
   "env": {
     "APP_ENV": "production",
-    "APP_DEBUG": "true",
+    "APP_DEBUG": "false",
     "APP_KEY": "base64:x/U/i0e2Q4M3Vw3x1wQ0jX1e6L5a4S3d2F1g0H9j8K7=",
     "APP_URL": "https://katar1205.vercel.app",
     "APP_PACKAGES_CACHE": "/tmp/packages.php",
