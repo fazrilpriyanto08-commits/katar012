@@ -28,6 +28,14 @@ Route::get('/aspirasi-warga', [HomeController::class, 'aspiration'])->name('aspi
 Route::post('/aspirasi-warga', [HomeController::class, 'storeAspiration'])->name('aspiration.store');
 
 // Sensus / Pendataan Pemuda
+Route::get('/images/{filename}', function ($filename) {
+    $path = public_path('images/' . $filename);
+    if (!file_exists($path)) {
+        abort(404);
+    }
+    return response()->file($path);
+})->where('filename', '.*');
+
 Route::get('/gabung-pemuda', [HomeController::class, 'youthRegistration'])->name('youth.register');
 Route::post('/gabung-pemuda', [HomeController::class, 'storeYouthRegistration'])->name('youth.store');
 
