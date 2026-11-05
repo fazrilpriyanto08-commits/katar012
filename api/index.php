@@ -19,14 +19,24 @@ try {
         }
     }
 
-    // Prepare clean package and services cache in /tmp
-    file_put_contents('/tmp/packages.php', "<?php return [];");
+    // Prepare package and services cache in /tmp
+    $packagesSrc = __DIR__ . '/../bootstrap/cache/packages.php';
+    if (file_exists($packagesSrc)) {
+        copy($packagesSrc, '/tmp/packages.php');
+    }
 
-    // Copy pre-seeded SQLite database to /tmp if not present
+    $servicesSrc = __DIR__ . '/../bootstrap/cache/services.php';
+    if (file_exists($servicesSrc)) {
+        copy($servicesSrc, '/tmp/services.php');
+    }
+
+    // Copy clean SQLite database to /tmp if not present or updated
     $tmpDb = '/tmp/database.sqlite';
     $sourceDb = __DIR__ . '/../database/database.sqlite';
-    if (!file_exists($tmpDb) && file_exists($sourceDb)) {
-        copy($sourceDb, $tmpDb);
+    if (file_exists($sourceDb)) {
+        if (!file_exists($tmpDb) || filemtime($sourceDb) > filemtime($tmpDb)) {
+            copy($sourceDb, $tmpDb);
+        }
     }
 
     require __DIR__ . '/../public/index.php';
