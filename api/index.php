@@ -1,33 +1,8 @@
 <?php
 
-// Direct static file delivery for serverless environments
-$uri = urldecode(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH));
-$publicFile = __DIR__ . '/../public' . $uri;
-
-if ($uri !== '/' && !empty($uri) && file_exists($publicFile) && is_file($publicFile)) {
-    $ext = strtolower(pathinfo($publicFile, PATHINFO_EXTENSION));
-    $mimes = [
-        'jpg' => 'image/jpeg',
-        'jpeg' => 'image/jpeg',
-        'png' => 'image/png',
-        'gif' => 'image/gif',
-        'webp' => 'image/webp',
-        'svg' => 'image/svg+xml',
-        'ico' => 'image/x-icon',
-        'css' => 'text/css',
-        'js' => 'application/javascript',
-        'json' => 'application/json',
-        'woff' => 'font/woff',
-        'woff2' => 'font/woff2',
-        'ttf' => 'font/ttf',
-    ];
-    $contentType = $mimes[$ext] ?? 'application/octet-stream';
-    header('Content-Type: ' . $contentType);
-    header('Cache-Control: public, max-age=86400');
-    header('Content-Length: ' . filesize($publicFile));
-    readfile($publicFile);
-    exit;
-}
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
 
 try {
     // Ensure writable directories in /tmp for serverless execution

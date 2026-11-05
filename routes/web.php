@@ -33,7 +33,20 @@ Route::get('/images/{filename}', function ($filename) {
     if (!file_exists($path)) {
         abort(404);
     }
-    return response()->file($path);
+    $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+    $mimes = [
+        'jpg' => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'png' => 'image/png',
+        'webp' => 'image/webp',
+        'svg' => 'image/svg+xml',
+    ];
+    $contentType = $mimes[$ext] ?? 'image/jpeg';
+    return response()->file($path, [
+        'Content-Type' => $contentType,
+        'Content-Disposition' => 'inline',
+        'Cache-Control' => 'public, max-age=86400',
+    ]);
 })->where('filename', '.*');
 
 Route::get('/gabung-pemuda', [HomeController::class, 'youthRegistration'])->name('youth.register');
