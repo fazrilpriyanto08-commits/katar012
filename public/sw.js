@@ -1,8 +1,9 @@
-const CACHE_NAME = 'warga-rt12-v1';
+const CACHE_NAME = 'warga-rt12-v2';
 const PRECACHE_ASSETS = [
   '/',
   '/offline.html',
   '/images/logo.jpg',
+  '/images/logo.png',
   '/manifest.json'
 ];
 
@@ -25,6 +26,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
+            console.log('[PWA SW] Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
@@ -34,7 +36,7 @@ self.addEventListener('activate', (event) => {
   return self.clients.claim();
 });
 
-// Fetch Event
+// Fetch Event: Network first with Cache fallback
 self.addEventListener('fetch', (event) => {
   const request = event.request;
 
@@ -48,7 +50,6 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          // If response is valid, clone to cache for offline read
           if (response && response.status === 200) {
             const clone = response.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
@@ -67,42 +68,16 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Handle Static Assets: Cache first, fallback to network
-  if (
-    request.destination === 'style' ||
-    request.destination === 'script' ||
-    request.destination === 'image' ||
-    request.destination === 'font'
-  ) {
-    event.respondWith(
-      caches.match(request).then((cached) => {
-        if (cached) {
-          // Return cached and refresh in background
-          fetch(request).then((networkResponse) => {
-            if (networkResponse && networkResponse.status === 200) {
-              caches.open(CACHE_NAME).then((cache) => cache.put(request, networkResponse));
-            }
-          }).catch(() => {});
-          return cached;
-        }
-        return fetch(request).then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const clone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-          }
-          return networkResponse;
-        }).catch(() => {
-          if (request.destination === 'image') {
-            return caches.match('/images/logo.jpg');
-          }
-        });
-      })
-    );
-    return;
-  }
-
-  // Default: Network with Cache Fallback
+  // Handle Static Assets & Images: Network first, cache fallback
   event.respondWith(
-    fetch(request).catch(() => caches.match(request))
+    fetch(request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const clone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+        }
+        return networkResponse;
+      })
+      .catch(() => caches.match(request))
   );
 });
