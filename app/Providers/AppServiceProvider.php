@@ -34,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Auto-initialize Neon PostgreSQL tables and default admin accounts on first boot
         if (!app()->runningInConsole() && config('database.default') === 'pgsql') {
-            if (!Schema::hasTable('articles')) {
+            if (!Schema::hasTable('articles') || !Schema::hasTable('uploaded_media')) {
                 Artisan::call('migrate', ['--force' => true]);
             }
 

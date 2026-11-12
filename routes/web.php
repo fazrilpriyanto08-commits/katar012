@@ -3,7 +3,20 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
+use App\Models\UploadedMedia;
 use Illuminate\Support\Facades\Route;
+
+// Permanently serve uploaded images stored in PostgreSQL/SQLite
+Route::get('/media/{uuid}', function (string $uuid) {
+    $media = UploadedMedia::where('uuid', $uuid)->firstOrFail();
+    $binary = base64_decode($media->data);
+
+    return response($binary, 200, [
+        'Content-Type' => $media->mime_type,
+        'Content-Length' => strlen($binary),
+        'Cache-Control' => 'public, max-age=31536000, immutable',
+    ]);
+})->name('media.show');
 
 /*
 |--------------------------------------------------------------------------

@@ -12,6 +12,7 @@ use App\Models\Gallery;
 use App\Models\HallOfFame;
 use App\Models\InventoryItem;
 use App\Models\OrganizationStructure;
+use App\Models\UploadedMedia;
 use App\Models\User;
 use App\Models\YouthMember;
 use Illuminate\Http\Request;
@@ -21,16 +22,12 @@ use Illuminate\Support\Str;
 class AdminController extends Controller
 {
     /**
-     * Helper untuk upload gambar lokal atau fallback URL
+     * Helper untuk upload gambar permanen ke database atau fallback URL
      */
     private function handleImageUpload(Request $request, string $fileKey = 'image_file', ?string $urlKey = 'image', ?string $oldPath = null): ?string
     {
         if ($request->hasFile($fileKey) && $request->file($fileKey)->isValid()) {
-            $file = $request->file($fileKey);
-            $extension = $file->getClientOriginalExtension() ?: 'jpg';
-            $filename = time() . '_' . Str::random(8) . '.' . $extension;
-            $file->move(public_path('images/uploads'), $filename);
-            return '/images/uploads/' . $filename;
+            return UploadedMedia::storeUploadedFile($request->file($fileKey));
         }
 
         if ($urlKey && $request->filled($urlKey)) {

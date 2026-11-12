@@ -398,11 +398,8 @@ class HomeController extends Controller
 
         $photoUrl = $validated['image'] ?? null;
 
-        if ($request->hasFile('image_file')) {
-            $file = $request->file('image_file');
-            $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images/uploads'), $fileName);
-            $photoUrl = asset('images/uploads/' . $fileName);
+        if ($request->hasFile('image_file') && $request->file('image_file')->isValid()) {
+            $photoUrl = \App\Models\UploadedMedia::storeUploadedFile($request->file('image_file'));
         }
 
         if (!$photoUrl) {
