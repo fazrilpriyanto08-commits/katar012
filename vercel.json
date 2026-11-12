@@ -8,7 +8,8 @@
   },
   "routes": [
     {
-      "handle": "filesystem"
+      "src": "/(images/.*|build/.*|manifest\\.json|sw\\.js|offline\\.html|favicon\\.ico)",
+      "dest": "/$1"
     },
     {
       "src": "/(.*)",
