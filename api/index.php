@@ -31,8 +31,15 @@ try {
     }
 
     // Map Neon / Vercel Postgres connection URL to Laravel DB_URL
-    $pgUrl = getenv('DATABASE_URL')
-        ?: ($_ENV['DATABASE_URL'] ?? (getenv('POSTGRES_URL') ?: ($_ENV['POSTGRES_URL'] ?? null)));
+    // Prefer unpooled connection so DDL migrations and transactions work cleanly without PgBouncer issues
+    $pgUrl = getenv('DATABASE_URL_UNPOOLED')
+        ?: ($_ENV['DATABASE_URL_UNPOOLED']
+        ?? (getenv('POSTGRES_URL_NON_POOLING')
+        ?: ($_ENV['POSTGRES_URL_NON_POOLING']
+        ?? (getenv('DATABASE_URL')
+        ?: ($_ENV['DATABASE_URL']
+        ?? (getenv('POSTGRES_URL')
+        ?: ($_ENV['POSTGRES_URL'] ?? null)))))));
 
     if ($pgUrl) {
         putenv('DB_CONNECTION=pgsql');
