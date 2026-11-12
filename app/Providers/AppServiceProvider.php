@@ -32,8 +32,9 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
-        // Auto-initialize Neon PostgreSQL tables and default admin accounts on first boot
-        if (!app()->runningInConsole() && config('database.default') === 'pgsql') {
+        // Auto-initialize Neon PostgreSQL tables and default admin accounts once per container
+        $bootFlag = '/tmp/.neon_bootstrapped_v2';
+        if (!app()->runningInConsole() && config('database.default') === 'pgsql' && !file_exists($bootFlag)) {
             if (!Schema::hasTable('articles') || !Schema::hasTable('uploaded_media')) {
                 Artisan::call('migrate', ['--force' => true]);
             }
@@ -44,6 +45,8 @@ class AppServiceProvider extends ServiceProvider
                     '--force' => true,
                 ]);
             }
+
+            @file_put_contents($bootFlag, '1');
         }
     }
 }
