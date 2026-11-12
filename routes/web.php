@@ -8,7 +8,10 @@ use Illuminate\Support\Facades\Route;
 
 // Permanently serve uploaded images stored in PostgreSQL/SQLite
 Route::get('/media/{uuid}', function (string $uuid) {
-    $media = UploadedMedia::where('uuid', $uuid)->firstOrFail();
+    $media = UploadedMedia::where('uuid', $uuid)->first();
+    if (!$media) {
+        return response('Not Found', 404);
+    }
     $binary = base64_decode($media->data);
 
     return response($binary, 200, [
