@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use Database\Seeders\AdminUserSeeder;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
@@ -33,16 +34,15 @@ class AppServiceProvider extends ServiceProvider
 
         // Auto-initialize Neon PostgreSQL tables and default admin accounts on first boot
         if (!app()->runningInConsole() && config('database.default') === 'pgsql') {
-            try {
-                if (!Schema::hasTable('users')) {
-                    Artisan::call('migrate', ['--force' => true]);
-                    Artisan::call('db:seed', [
-                        '--class' => AdminUserSeeder::class,
-                        '--force' => true,
-                    ]);
-                }
-            } catch (\Throwable $e) {
-                report($e);
+            if (!Schema::hasTable('articles')) {
+                Artisan::call('migrate', ['--force' => true]);
+            }
+
+            if (Schema::hasTable('users') && User::where('email', 'admin@katar012.id')->doesntExist()) {
+                Artisan::call('db:seed', [
+                    '--class' => AdminUserSeeder::class,
+                    '--force' => true,
+                ]);
             }
         }
     }
