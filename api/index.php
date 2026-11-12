@@ -30,13 +30,31 @@ try {
         copy($servicesSrc, '/tmp/services.php');
     }
 
-    // Copy clean SQLite database to /tmp if not present or updated
-    $tmpDb = '/tmp/database.sqlite';
-    $sourceDb = __DIR__ . '/../database/database.sqlite';
-    if (file_exists($sourceDb)) {
-        if (!file_exists($tmpDb) || filemtime($sourceDb) > filemtime($tmpDb)) {
+    // Map Neon / Vercel Postgres connection URL to Laravel DB_URL
+    $pgUrl = getenv('DATABASE_URL')
+        ?: ($_ENV['DATABASE_URL'] ?? (getenv('POSTGRES_URL') ?: ($_ENV['POSTGRES_URL'] ?? null)));
+
+    if ($pgUrl) {
+        putenv('DB_CONNECTION=pgsql');
+        putenv('DB_URL=' . $pgUrl);
+        putenv('DB_SSLMODE=require');
+        $_ENV['DB_CONNECTION'] = 'pgsql';
+        $_ENV['DB_URL'] = $pgUrl;
+        $_ENV['DB_SSLMODE'] = 'require';
+        $_SERVER['DB_CONNECTION'] = 'pgsql';
+        $_SERVER['DB_URL'] = $pgUrl;
+        $_SERVER['DB_SSLMODE'] = 'require';
+    } else {
+        // Fallback to SQLite in /tmp if no cloud database URL is configured
+        $tmpDb = '/tmp/database.sqlite';
+        $sourceDb = __DIR__ . '/../database/database.sqlite';
+        if (file_exists($sourceDb) && (!file_exists($tmpDb) || filemtime($sourceDb) > filemtime($tmpDb))) {
             copy($sourceDb, $tmpDb);
         }
+        putenv('DB_CONNECTION=sqlite');
+        putenv('DB_DATABASE=' . $tmpDb);
+        $_ENV['DB_CONNECTION'] = 'sqlite';
+        $_ENV['DB_DATABASE'] = $tmpDb;
     }
 
     require __DIR__ . '/../public/index.php';
